@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\PageController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
 
 // Public Pages
 Route::get('/', function () {
@@ -32,8 +33,8 @@ Route::get('/page5', function () {
 
 // Authenticated Routes
 Route::middleware("roleAuth:admin")->group(function () {
-    Route::get("/user", [UserController::class, "index"])->name("user");
-Route::get("/admin/create", [UserController::class, 'create'])->name('admin.create');
+    Route::get("/admin", [UserController::class, "index"])->name("admin");
+    Route::get("/admin/create", [UserController::class, 'create'])->name('admin.create');
     Route::get("/admin/{id}", [UserController::class, 'show'])->name('admin.show');
     Route::get("/admin/edit/{id}", [UserController::class, 'edit'])->name('admin.edit');
     Route::get('/dashboard', function () {
@@ -46,8 +47,10 @@ Route::get("/admin/create", [UserController::class, 'create'])->name('admin.crea
     
     });    
     
-Route::middleware(['role:user'])->group(function () {
-    Route::get('/user/posts', [UserPostController::class, 'index'])->name('user.posts.index');
-    Route::get('/user/posts/create', [UserPostController::class, 'create'])->name('user.posts.create');
-    Route::post('/user/posts', [UserPostController::class, 'store'])->name('user.posts.store');
+Route::middleware(['roleAuth:user'])->group(function () {
+    Route::get('/user', [PostController::class, "blog"])->name('user');
+    Route::get('/user/create', [PostController::class, 'create'])->name('user.create');
+    Route::get('/user/show/{id}', [PostController::class, 'show'])->name('user.show');
+    Route::get('/user/edit/{id}', [PostController::class, 'edit'])->name('user.edit');
+    Route::post('/user', [PostController::class, 'store'])->name('posts.store');
 });  
